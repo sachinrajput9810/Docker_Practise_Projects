@@ -1,0 +1,29 @@
+
+services:
+  mysqldb:
+    image: 'mysql:latest'
+    environment:
+      - MYSQL_ROOT_PASSWORD=Albert9313@
+      - MYSQL_DATABASE=userinfo
+    container_name: "mysqldb"
+    networks:
+        - my-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pAlbert9313@"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  java-app:
+    build: .
+    container_name: docker_connect
+    networks:
+      - my-network
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+
+networks:
+    my-network:
